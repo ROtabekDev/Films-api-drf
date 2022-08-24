@@ -1,7 +1,6 @@
-import imp
 from rest_framework import serializers
 
-from .models import Movie
+from .models import Movie, Review
 
 class MovieListSerializer(serializers.ModelSerializer):
     """Kinolar ro`yhati"""
@@ -20,3 +19,8 @@ class MovieDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         exclude = ('draft',)
+
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = "__all__"
