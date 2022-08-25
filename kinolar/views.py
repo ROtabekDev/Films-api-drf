@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 
 from .models import Movie
 from .serializers import (
+        CreateRatingSerializer,
         MovieListSerializer, 
         MovieDetailSerializer,
         ReviewCreateSerializer
@@ -31,3 +32,19 @@ class ReviewCreateAPIView(APIView):
         review.save()
             
         return Response(data=review.data)
+
+class AddStarRatingView(APIView):
+    def get_ip_client(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if  x_forwarded_for:
+            ip =  x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
+    def post(self, request):
+        serializer = CreateRatingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(ip=self.get_ip_client(request))
+        return Response(serializer.data, status=201)
+      
