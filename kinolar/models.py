@@ -114,7 +114,12 @@ class Rating(models.Model):
     """Reyting"""
     ip = models.CharField("IP addresi", max_length=30) 
     star = models.ForeignKey(RatingStar, verbose_name='Yulduzi', on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, verbose_name='Kino', on_delete=models.CASCADE)
+    movie = models.ForeignKey(
+        Movie, 
+        verbose_name='Kino', 
+        on_delete=models.CASCADE,
+        related_name='ratings'
+    )
  
 
     def __str__(self):
