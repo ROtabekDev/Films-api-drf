@@ -1,5 +1,3 @@
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import generics
 
 from django.db import models 
@@ -15,42 +13,67 @@ from .serializers import (
     )
 from .service import get_client_ip
 
-class MovieListAPIView(APIView):
-    """Kinolar ro`yhati"""
-    def get(self, request):
+# class MovieListAPIView(APIView):
+#     """Kinolar ro`yhati"""
+#     def get(self, request):
+#         movies = Movie.objects.filter(draft=False).annotate(
+#             rating_user=models.Count("ratings",
+#                                      filter=models.Q(ratings__ip=get_client_ip(self.request)))
+#         ).annotate(
+#             middle_star=models.Sum(models.F('ratings__star')) / models.Count(models.F('ratings'))
+#         )  
+#         serializer = MovieListSerializer(movies, many=True)
+#         return Response(data=serializer.data)
+
+class MovieListGAPIView(generics.ListAPIView):
+    serializer_class = MovieListSerializer
+
+    def get_queryset(self):
         movies = Movie.objects.filter(draft=False).annotate(
             rating_user=models.Count("ratings",
                                      filter=models.Q(ratings__ip=get_client_ip(self.request)))
         ).annotate(
             middle_star=models.Sum(models.F('ratings__star')) / models.Count(models.F('ratings'))
-        ) 
-        print(movies)
-        serializer = MovieListSerializer(movies, many=True)
-        return Response(data=serializer.data)
+        )  
+        return movies
 
-class MovieDetailAPIView(APIView):
-    """Bitta kino uchun"""
-    def get(self, request, pk):
-        movie = Movie.objects.get(id=pk)
-        serializer = MovieDetailSerializer(movie)
-        return Response(data=serializer.data)
 
-class ReviewCreateAPIView(APIView):
-    """Filmga komment qo`shish"""
-    def post(self, request):
-        review = ReviewCreateSerializer(data=request.data)
-        review.is_valid(raise_exception=True)
-        review.save()
+# class MovieDetailAPIView(APIView):
+#     """Bitta kino uchun"""
+#     def get(self, request, pk):
+#         movie = Movie.objects.get(id=pk)
+#         serializer = MovieDetailSerializer(movie)
+#         return Response(data=serializer.data)
+
+class MovieDetailGAPIView(generics.RetrieveAPIView):
+    serializer_class = MovieDetailSerializer
+    queryset = Movie.objects.filter(draft=False)
+
+# class ReviewCreateAPIView(APIView):
+#     """Filmga komment qo`shish"""
+#     def post(self, request):
+#         review = ReviewCreateSerializer(data=request.data)
+#         review.is_valid(raise_exception=True)
+#         review.save()
             
-        return Response(data=review.data)
+#         return Response(data=review.data)
 
-class AddStarRatingView(APIView): 
+class ReviewCreateGAPIView(generics.CreateAPIView):
+    serializer_class = ReviewCreateSerializer
 
-    def post(self, request):
-        serializer = CreateRatingSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(ip=self.get_ip_client(request))
-        return Response(serializer.data, status=201)
+# class AddStarRatingView(APIView): 
+
+#     def post(self, request):
+#         serializer = CreateRatingSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save(ip=self.get_ip_client(request))
+#         return Response(serializer.data, status=201)
+
+class AddStarRatingGView(generics.CreateAPIView):
+    serializer_class = CreateRatingSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(ip=get_client_ip(self.request))
 
 class ActorListAPIView(generics.ListAPIView):
     queryset = Actor.objects.all()
