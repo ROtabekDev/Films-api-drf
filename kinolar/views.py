@@ -10,7 +10,8 @@ from .serializers import (
         MovieListSerializer, 
         MovieDetailSerializer,
         ReviewCreateSerializer,
-        ActorListSerializer
+        ActorListSerializer,
+        ActorDetailSerializer
     )
 from .service import get_client_ip
 
@@ -54,4 +55,9 @@ class AddStarRatingView(APIView):
 class ActorListAPIView(generics.ListAPIView):
     queryset = Actor.objects.all()
     serializer_class = ActorListSerializer
+
+class ActorListAPIView(generics.RetrieveAPIView):
+    queryset = Actor.objects.all()
+    serializer_class = ActorDetailSerializer
+    # lookup_field = 'pk' # standart o`zi 'pk'
       

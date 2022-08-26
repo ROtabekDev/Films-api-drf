@@ -8,4 +8,5 @@ urlpatterns = [
     path('review/', views.ReviewCreateAPIView.as_view(), name='create-review'), 
     path('rating/', views.AddStarRatingView.as_view(), name='create-rating'), 
     path('actors/', views.ActorListAPIView.as_view(), name='actor-list'), 
+    path('actor/<int:pk>/', views.ActorListAPIView.as_view(), name='actor-detail'), 
 ]
