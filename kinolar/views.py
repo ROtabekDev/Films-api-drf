@@ -1,6 +1,7 @@
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db import models 
+from rest_framework import permissions
 
 from .models import Movie, Actor
 from .serializers import (
@@ -50,6 +51,7 @@ class MovieListGAPIView(generics.ListAPIView):
 class MovieDetailGAPIView(generics.RetrieveAPIView):
     serializer_class = MovieDetailSerializer
     queryset = Movie.objects.filter(draft=False)
+    permission_classes = [permissions.IsAuthenticated]
 
 # class ReviewCreateAPIView(APIView):
 #     """Filmga komment qo`shish"""
@@ -62,6 +64,7 @@ class MovieDetailGAPIView(generics.RetrieveAPIView):
 
 class ReviewCreateGAPIView(generics.CreateAPIView):
     serializer_class = ReviewCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 # class AddStarRatingView(APIView): 
 
@@ -73,6 +76,7 @@ class ReviewCreateGAPIView(generics.CreateAPIView):
 
 class AddStarRatingGView(generics.CreateAPIView):
     serializer_class = CreateRatingSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(ip=get_client_ip(self.request))
@@ -81,8 +85,9 @@ class ActorListAPIView(generics.ListAPIView):
     queryset = Actor.objects.all()
     serializer_class = ActorListSerializer
 
-class ActorListAPIView(generics.RetrieveAPIView):
+class ActorDetailAPIView(generics.RetrieveAPIView):
     queryset = Actor.objects.all()
     serializer_class = ActorDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
     # lookup_field = 'pk' # standart o`zi 'pk'
       

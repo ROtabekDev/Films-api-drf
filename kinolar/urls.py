@@ -8,5 +8,5 @@ urlpatterns = [
     path('review/', views.ReviewCreateGAPIView.as_view(), name='create-review'), 
     path('rating/', views.AddStarRatingGView.as_view(), name='create-rating'), 
     path('actors/', views.ActorListAPIView.as_view(), name='actor-list'), 
-    path('actor/<int:pk>/', views.ActorListAPIView.as_view(), name='actor-detail'), 
+    path('actor/<int:pk>/', views.ActorDetailAPIView.as_view(), name='actor-detail'), 
 ]
