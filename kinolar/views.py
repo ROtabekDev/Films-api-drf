@@ -3,6 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db import models 
 from rest_framework import permissions
 
+
 from .models import Movie, Actor
 from .serializers import (
         CreateRatingSerializer,
@@ -12,7 +13,7 @@ from .serializers import (
         ActorListSerializer,
         ActorDetailSerializer
     )
-from .service import MovieFilter, get_client_ip
+from .service import MovieFilter, get_client_ip, PaginationMovie
 
 # class MovieListAPIView(APIView):
 #     """Kinolar ro`yhati"""
@@ -30,6 +31,7 @@ class MovieListGAPIView(generics.ListAPIView):
     serializer_class = MovieListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = MovieFilter
+    pagination_class = PaginationMovie
 
     def get_queryset(self):
         movies = Movie.objects.filter(draft=False).annotate(
